@@ -1,4 +1,5 @@
 ---
+import ActionArrow from "./ActionArrow.astro";
 const currentYear = new Date().getFullYear();
 ---
 
@@ -18,9 +19,6 @@ const currentYear = new Date().getFullYear();
           <a href="#partnership">Partnership</a>
         </nav>
 
-        <p class="footer-small-copy">
-          More program pages will be added as locations and services are confirmed.
-        </p>
       </div>
 
       <section class="footer-feature" aria-labelledby="footer-title">
@@ -34,7 +32,7 @@ const currentYear = new Date().getFullYear();
         <form
           class="footer-newsletter"
           data-newsletter-form
-          aria-describedby="footer-newsletter-note footer-newsletter-status"
+          aria-describedby="footer-newsletter-status"
         >
           <label class="sr-only" for="footer-newsletter-email">Email address</label>
           <div class="footer-newsletter-control">
@@ -50,9 +48,6 @@ const currentYear = new Date().getFullYear();
             />
             <button type="submit">Subscribe</button>
           </div>
-          <p class="footer-newsletter-note" id="footer-newsletter-note">
-            Newsletter delivery is being connected. No email is sent or stored yet.
-          </p>
           <p
             class="footer-form-status"
             id="footer-newsletter-status"
@@ -74,13 +69,10 @@ const currentYear = new Date().getFullYear();
             aria-controls="contact-dialog"
           >
             Contact SPH
-            <span class="footer-contact-arrow" aria-hidden="true">↗</span>
+            <span class="footer-contact-arrow" aria-hidden="true"><ActionArrow /></span>
           </button>
         </h2>
         <p>For housing questions, agency referrals, or partnership inquiries.</p>
-        <p class="footer-contact-note">
-          Official phone and email details will be published here once confirmed.
-        </p>
       </section>
     </div>
   </div>
@@ -154,7 +146,7 @@ const currentYear = new Date().getFullYear();
       <div class="contact-form-actions">
         <button class="contact-form-submit" type="submit">
           Send
-          <span class="contact-form-submit-orb" aria-hidden="true">↗</span>
+          <span class="contact-form-submit-orb" aria-hidden="true"><ActionArrow /></span>
         </button>
       </div>
 
@@ -170,6 +162,7 @@ const currentYear = new Date().getFullYear();
 </dialog>
 
 <script>
+  import { submitForm } from "../lib/submit-form";
   const setupFooterForms = () => {
     const newsletterForm = document.querySelector<HTMLFormElement>(
       "[data-newsletter-form]",
@@ -183,9 +176,7 @@ const currentYear = new Date().getFullYear();
 
       newsletterForm.addEventListener("submit", (event) => {
         event.preventDefault();
-        newsletterStatus?.replaceChildren(
-          "Signup was not submitted because newsletter delivery is not connected yet.",
-        );
+        void submitForm(newsletterForm, newsletterStatus, "newsletter");
       });
 
       newsletterForm.addEventListener("input", () => {
@@ -251,9 +242,7 @@ const currentYear = new Date().getFullYear();
 
     contactForm?.addEventListener("submit", (event) => {
       event.preventDefault();
-      contactStatus?.replaceChildren(
-        "Your message was not sent because SPH’s contact inbox is not connected yet.",
-      );
+      void submitForm(contactForm, contactStatus, "contact");
     });
 
     contactForm?.addEventListener("input", () => {

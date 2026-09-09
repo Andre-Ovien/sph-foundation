@@ -1,3 +1,7 @@
+---
+import ActionArrow from "./ActionArrow.astro";
+---
+
 <dialog
   class="start-dialog"
   id="get-started-dialog"
@@ -33,7 +37,7 @@
             data-start-pathway-choice
             checked
           />
-          <span>Individual or household</span>
+          <span>Individual<span class="start-pathway-detail">&nbsp;or household</span></span>
         </label>
 
         <label class="start-pathway-option">
@@ -43,7 +47,7 @@
             value="agency"
             data-start-pathway-choice
           />
-          <span>Agency referral</span>
+          <span>Agency<span class="start-pathway-detail">&nbsp;referral</span></span>
         </label>
       </fieldset>
 
@@ -129,6 +133,28 @@
         </div>
 
         <div class="contact-form-field contact-form-message">
+          <label for="start-individual-income">Monthly household income before taxes (USD)</label>
+          <select id="start-individual-income" name="individualMonthlyHouseholdIncome" required>
+            <option value="">Select an income range</option>
+            <option value="under-1000">Less than $1,000</option>
+            <option value="1000-under-2500">$1,000 to under $2,500</option>
+            <option value="2500-under-4000">$2,500 to under $4,000</option>
+            <option value="4000-under-6000">$4,000 to under $6,000</option>
+            <option value="6000-plus">$6,000 or more</option>
+          </select>
+        </div>
+
+        <div class="contact-form-field contact-form-message">
+          <label for="start-individual-employment">Employment status (optional)</label>
+          <select id="start-individual-employment" name="individualEmploymentStatus">
+            <option value="">Select if applicable</option>
+            <option value="employed">Employed</option>
+            <option value="looking-for-employment">Looking for employment</option>
+            <option value="student">Student</option>
+          </select>
+        </div>
+
+        <div class="contact-form-field contact-form-message">
           <label for="start-individual-situation">Current housing situation</label>
           <textarea
             id="start-individual-situation"
@@ -137,6 +163,18 @@
             maxlength="1500"
             required
           ></textarea>
+        </div>
+
+        <div class="start-screening-group">
+          <p>Optional preliminary acknowledgements, not authorization for a check or test. Any applicable screening policy and separate consent will be provided before proceeding.</p>
+          <label>
+            <input type="checkbox" name="backgroundCheckAcknowledgement" />
+            <span>I am willing to discuss a background check and review its scope and authorization before deciding.</span>
+          </label>
+          <label>
+            <input type="checkbox" name="drugTestAcknowledgement" />
+            <span>I am willing to discuss drug testing, if applicable, and review the policy and consent before deciding.</span>
+          </label>
         </div>
       </section>
 
@@ -270,7 +308,7 @@
       <div class="contact-form-actions start-form-actions">
         <button class="contact-form-submit" type="submit">
           Submit
-          <span class="contact-form-submit-orb" aria-hidden="true">↗</span>
+          <span class="contact-form-submit-orb" aria-hidden="true"><ActionArrow /></span>
         </button>
       </div>
 
@@ -286,6 +324,7 @@
 </dialog>
 
 <script>
+  import { submitForm } from "../lib/submit-form";
   const setupGetStartedDialog = () => {
     const dialog = document.querySelector<HTMLDialogElement>("[data-start-dialog]");
 
@@ -382,9 +421,7 @@
 
     form?.addEventListener("submit", (event) => {
       event.preventDefault();
-      status?.replaceChildren(
-        "This inquiry has not been submitted because intake delivery is not connected yet.",
-      );
+      void submitForm(form, status, "intake");
     });
 
     form?.addEventListener("input", () => {

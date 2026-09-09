@@ -1,0 +1,48 @@
+---
+import { readToken, finishNewsletter } from '../lib/newsletter.mjs';
+export const prerender = false;
+const env = { ...import.meta.env, ...process.env };
+Astro.response.headers.set('Cache-Control', 'no-store');
+Astro.response.headers.set('Referrer-Policy', 'no-referrer');
+Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+Astro.response.headers.set('X-Frame-Options', 'DENY');
+Astro.response.headers.set('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
+const token = Astro.url.searchParams.get('token') || '';
+let action = '';
+let message = '';
+let completed = false;
+try {
+  if (!import.meta.env.DEV && env.SPH_FORMS_ENABLED !== 'true') throw Error('Newsletter preferences are temporarily unavailable.');
+  action = readToken(token, env).action;
+  if (Astro.request.method === 'POST') {
+    if (Astro.request.headers.get('origin') !== Astro.url.origin) throw Error('Please open the link in your browser and try again.');
+    message = await finishNewsletter(token, env);
+    completed = true;
+  }
+} catch (error) {
+  Astro.response.status = 400;
+  message = error instanceof Error ? error.message : 'Please try again later.';
+  action = '';
+}
+---
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Newsletter | SPH Foundation</title></head>
+  <body>
+    <main>
+      <p class="eyebrow">SPH FOUNDATION</p>
+      <h1>Newsletter preferences</h1>
+      {message ? <p role="status">{message}</p> : <p>Select below to stop receiving newsletter updates.</p>}
+      {!completed && action && <form method="post"><button type="submit">Unsubscribe</button></form>}
+      <a href="/">Return to SPH Foundation</a>
+    </main>
+  </body>
+</html>
+<style is:global>
+  body { margin:0; min-height:100svh; display:grid; place-items:center; background:#f4efe3; color:#123b30; font:17px/1.6 system-ui,sans-serif; }
+  main { max-width:480px; padding:48px 24px; }
+  h1 { font:48px/1.1 Georgia,serif; letter-spacing:-2px; margin:20px 0; }
+  .eyebrow { font-size:12px; letter-spacing:2px; font-weight:700; }
+  button { border:0; border-radius:40px; background:#123b30; color:#fff9ed; font:600 17px system-ui; padding:16px 25px; cursor:pointer; margin:10px 0 25px; }
+  a { color:inherit; display:block; font-size:14px; }
+</style>
