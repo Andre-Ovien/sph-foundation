@@ -83,6 +83,7 @@ const currentYear = new Date().getFullYear();
 <div class="newsletter-toast" data-newsletter-toast hidden>
   <p data-newsletter-status role="status" aria-live="polite" aria-atomic="true"></p>
   <button type="button" data-newsletter-dismiss aria-label="Dismiss newsletter notification">×</button>
+  <span class="newsletter-toast-track" aria-hidden="true"><span data-newsletter-progress></span></span>
 </div>
 
 <dialog
@@ -177,21 +178,38 @@ const currentYear = new Date().getFullYear();
       newsletterForm.dataset.bound = "true";
       const toast = document.querySelector<HTMLElement>('[data-newsletter-toast]');
       let toastTimer: ReturnType<typeof setTimeout> | undefined;
+      let countdown: Animation | undefined;
+      const progress = toast?.querySelector<HTMLElement>('[data-newsletter-progress]');
       const dismissToast = () => {
         clearTimeout(toastTimer);
+        countdown?.cancel();
         if (toast) toast.hidden = true;
         newsletterStatus?.replaceChildren();
       };
       const showToast = (message: string, state: 'pending' | 'success' | 'error') => {
         clearTimeout(toastTimer);
+        countdown?.cancel();
         if (!toast) return;
         toast.hidden = false;
         toast.dataset.state = state;
         newsletterStatus?.replaceChildren(message);
-        if (state === 'success') toastTimer = setTimeout(() => {
-          if (!toast.matches(':hover, :focus-within')) dismissToast();
-        }, 8000);
+        if (state === 'success' && progress) {
+          if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            toastTimer = setTimeout(dismissToast, 8000);
+          } else {
+            countdown = progress.animate([{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 8000, easing: 'linear', fill: 'forwards' });
+            countdown.onfinish = dismissToast;
+            if (toast.matches(':hover, :focus-within')) countdown.pause();
+          }
+        }
       };
+      const resumeCountdown = () => {
+        if (!toast?.matches(':hover, :focus-within') && countdown?.playState === 'paused') countdown.play();
+      };
+      toast?.addEventListener('pointerenter', () => countdown?.pause());
+      toast?.addEventListener('pointerleave', resumeCountdown);
+      toast?.addEventListener('focusin', () => countdown?.pause());
+      toast?.addEventListener('focusout', () => requestAnimationFrame(resumeCountdown));
       toast?.querySelector('[data-newsletter-dismiss]')?.addEventListener('click', dismissToast);
 
       newsletterForm.addEventListener("submit", (event) => {
