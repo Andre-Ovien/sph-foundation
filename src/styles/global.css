@@ -1827,6 +1827,18 @@
     line-height: 1.7;
   }
 
+  .footer-contact-email {
+    display: inline-block;
+    max-width: 100%;
+    margin-top: 1rem;
+    color: var(--cream, #f7f4ed);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
   .footer-contact-note {
     max-width: 28ch;
     margin: 2rem auto 0;
