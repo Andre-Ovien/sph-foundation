@@ -1827,7 +1827,8 @@
     line-height: 1.7;
   }
 
-  .footer-contact-email {
+  .footer-contact-email,
+  .footer-contact-phone {
     display: inline-block;
     max-width: 100%;
     margin-top: 1rem;
@@ -1837,6 +1838,11 @@
     overflow-wrap: anywhere;
     text-decoration: underline;
     text-underline-offset: 0.25em;
+  }
+
+  .footer-contact-phone {
+    display: block;
+    margin-top: 0.5rem;
   }
 
   .footer-contact-note {
