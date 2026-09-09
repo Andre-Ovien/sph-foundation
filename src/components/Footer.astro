@@ -183,12 +183,14 @@ const currentYear = new Date().getFullYear();
       const dismissToast = () => {
         clearTimeout(toastTimer);
         countdown?.cancel();
+        countdown = undefined;
         if (toast) toast.hidden = true;
         newsletterStatus?.replaceChildren();
       };
       const showToast = (message: string, state: 'pending' | 'success' | 'error') => {
         clearTimeout(toastTimer);
         countdown?.cancel();
+        countdown = undefined;
         if (!toast) return;
         toast.hidden = false;
         toast.dataset.state = state;
