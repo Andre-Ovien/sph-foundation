@@ -1,0 +1,400 @@
+<dialog
+  class="start-dialog"
+  id="get-started-dialog"
+  data-start-dialog
+  aria-labelledby="start-dialog-title"
+  aria-describedby="start-dialog-description"
+>
+  <div class="start-dialog-card">
+    <button
+      class="start-dialog-close"
+      type="button"
+      data-start-close
+      aria-label="Close get started form"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+
+    <p class="start-dialog-eyebrow">Get started</p>
+    <h2 id="start-dialog-title">Tell us where to begin.</h2>
+    <p class="start-dialog-description" id="start-dialog-description">
+      Choose the pathway that fits, then share a few details for the SPH team.
+    </p>
+
+    <form class="contact-form start-form" data-start-form>
+      <fieldset class="start-pathway-choice">
+        <legend class="sr-only">Choose an inquiry pathway</legend>
+
+        <label class="start-pathway-option">
+          <input
+            type="radio"
+            name="pathway"
+            value="individual"
+            data-start-pathway-choice
+            checked
+          />
+          <span>Individual or household</span>
+        </label>
+
+        <label class="start-pathway-option">
+          <input
+            type="radio"
+            name="pathway"
+            value="agency"
+            data-start-pathway-choice
+          />
+          <span>Agency referral</span>
+        </label>
+      </fieldset>
+
+      <section
+        class="start-form-panel"
+        data-start-panel="individual"
+        aria-label="Individual or household inquiry"
+      >
+        <div class="contact-form-field">
+          <label for="start-individual-name">Full name</label>
+          <input
+            id="start-individual-name"
+            name="individualName"
+            type="text"
+            autocomplete="name"
+            maxlength="100"
+            required
+          />
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-individual-email">Email address</label>
+          <input
+            id="start-individual-email"
+            name="individualEmail"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            maxlength="254"
+            required
+          />
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-individual-phone">Phone number</label>
+          <input
+            id="start-individual-phone"
+            name="individualPhone"
+            type="tel"
+            autocomplete="tel"
+            inputmode="tel"
+            maxlength="30"
+            required
+          />
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-individual-time">Best time to contact</label>
+          <select id="start-individual-time" name="individualContactTime" required>
+            <option value="">Select a time</option>
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+            <option value="anytime">Any time</option>
+          </select>
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-individual-applying-as">Who needs housing?</label>
+          <select id="start-individual-applying-as" name="applyingAs" required>
+            <option value="">Select one</option>
+            <option value="self">Just me</option>
+            <option value="household">My household or family</option>
+          </select>
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-individual-household-size">Number of people</label>
+          <select
+            id="start-individual-household-size"
+            name="individualHouseholdSize"
+            required
+          >
+            <option value="">Select household size</option>
+            <option value="1">1 person</option>
+            <option value="2">2 people</option>
+            <option value="3">3 people</option>
+            <option value="4">4 people</option>
+            <option value="5">5 people</option>
+            <option value="6">6 people</option>
+            <option value="7+">7 or more people</option>
+          </select>
+        </div>
+
+        <div class="contact-form-field contact-form-message">
+          <label for="start-individual-situation">Current housing situation</label>
+          <textarea
+            id="start-individual-situation"
+            name="individualSituation"
+            rows="2"
+            maxlength="1500"
+            required
+          ></textarea>
+        </div>
+      </section>
+
+      <section
+        class="start-form-panel"
+        data-start-panel="agency"
+        aria-label="Agency referral"
+        hidden
+      >
+        <div class="contact-form-field">
+          <label for="start-agency-name">Agency name</label>
+          <input
+            id="start-agency-name"
+            name="agencyName"
+            type="text"
+            autocomplete="organization"
+            maxlength="140"
+            required
+            disabled
+          />
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-agency-type">Agency type</label>
+          <select id="start-agency-type" name="agencyType" required disabled>
+            <option value="">Select agency type</option>
+            <option value="hospital">Hospital or healthcare provider</option>
+            <option value="social-services">Social services</option>
+            <option value="veterans">Veterans services</option>
+            <option value="housing">Housing organization</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-caseworker-name">Caseworker name</label>
+          <input
+            id="start-caseworker-name"
+            name="caseworkerName"
+            type="text"
+            autocomplete="name"
+            maxlength="100"
+            required
+            disabled
+          />
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-caseworker-email">Work email</label>
+          <input
+            id="start-caseworker-email"
+            name="caseworkerEmail"
+            type="email"
+            autocomplete="email"
+            inputmode="email"
+            maxlength="254"
+            required
+            disabled
+          />
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-caseworker-phone">Phone number</label>
+          <input
+            id="start-caseworker-phone"
+            name="caseworkerPhone"
+            type="tel"
+            autocomplete="tel"
+            inputmode="tel"
+            maxlength="30"
+            required
+            disabled
+          />
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-caseworker-time">Best time to contact</label>
+          <select id="start-caseworker-time" name="caseworkerContactTime" required disabled>
+            <option value="">Select a time</option>
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+            <option value="anytime">Any time</option>
+          </select>
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-referral-name">Person being referred</label>
+          <input
+            id="start-referral-name"
+            name="referralName"
+            type="text"
+            maxlength="100"
+            required
+            disabled
+          />
+        </div>
+
+        <div class="contact-form-field">
+          <label for="start-referral-household-size">Household size</label>
+          <select
+            id="start-referral-household-size"
+            name="referralHouseholdSize"
+            required
+            disabled
+          >
+            <option value="">Select household size</option>
+            <option value="1">1 person</option>
+            <option value="2">2 people</option>
+            <option value="3">3 people</option>
+            <option value="4">4 people</option>
+            <option value="5">5 people</option>
+            <option value="6">6 people</option>
+            <option value="7+">7 or more people</option>
+          </select>
+        </div>
+
+        <div class="contact-form-field contact-form-message">
+          <label for="start-referral-situation">Tell us about the housing need</label>
+          <textarea
+            id="start-referral-situation"
+            name="referralSituation"
+            rows="2"
+            maxlength="1500"
+            required
+            disabled
+          ></textarea>
+        </div>
+      </section>
+
+      <div class="contact-form-actions start-form-actions">
+        <button class="contact-form-submit" type="submit">
+          Submit
+          <span class="contact-form-submit-orb" aria-hidden="true">↗</span>
+        </button>
+      </div>
+
+      <p
+        class="contact-form-status start-form-status"
+        data-start-status
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      ></p>
+    </form>
+  </div>
+</dialog>
+
+<script>
+  const setupGetStartedDialog = () => {
+    const dialog = document.querySelector<HTMLDialogElement>("[data-start-dialog]");
+
+    if (!dialog || dialog.dataset.bound === "true") return;
+
+    dialog.dataset.bound = "true";
+    const openers = document.querySelectorAll<HTMLElement>("[data-start-open]");
+    const closeButton = dialog.querySelector<HTMLButtonElement>("[data-start-close]");
+    const form = dialog.querySelector<HTMLFormElement>("[data-start-form]");
+    const status = dialog.querySelector<HTMLElement>("[data-start-status]");
+    const choices = Array.from(
+      dialog.querySelectorAll<HTMLInputElement>("[data-start-pathway-choice]"),
+    );
+    const panels = Array.from(
+      dialog.querySelectorAll<HTMLElement>("[data-start-panel]"),
+    );
+    let lastTrigger: HTMLElement | null = null;
+
+    const setPathway = (pathway: string) => {
+      choices.forEach((choice) => {
+        choice.checked = choice.value === pathway;
+      });
+
+      panels.forEach((panel) => {
+        const isActive = panel.dataset.startPanel === pathway;
+        panel.hidden = !isActive;
+
+        panel
+          .querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+            "input, select, textarea",
+          )
+          .forEach((field) => {
+            field.disabled = !isActive;
+          });
+      });
+
+      status?.replaceChildren();
+    };
+
+    const openDialog = (opener: HTMLElement) => {
+      lastTrigger = opener;
+      const pathway = opener.dataset.startPathway === "agency" ? "agency" : "individual";
+      setPathway(pathway);
+
+      if (typeof dialog.showModal === "function") {
+        if (!dialog.open) dialog.showModal();
+      } else {
+        dialog.setAttribute("open", "");
+      }
+
+      document.documentElement.classList.add("has-start-dialog");
+      window.requestAnimationFrame(() => {
+        dialog
+          .querySelector<HTMLElement>(`[data-start-panel="${pathway}"] input`)
+          ?.focus();
+      });
+    };
+
+    const closeDialog = () => {
+      if (typeof dialog.close === "function") {
+        dialog.close();
+      } else {
+        dialog.removeAttribute("open");
+        document.documentElement.classList.remove("has-start-dialog");
+        lastTrigger?.focus();
+        lastTrigger = null;
+      }
+    };
+
+    openers.forEach((opener) => {
+      opener.addEventListener("click", (event) => {
+        event.preventDefault();
+        openDialog(opener);
+      });
+    });
+
+    choices.forEach((choice) => {
+      choice.addEventListener("change", () => {
+        if (choice.checked) setPathway(choice.value);
+      });
+    });
+
+    closeButton?.addEventListener("click", closeDialog);
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) closeDialog();
+    });
+
+    dialog.addEventListener("close", () => {
+      document.documentElement.classList.remove("has-start-dialog");
+      lastTrigger?.focus();
+      lastTrigger = null;
+    });
+
+    form?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      status?.replaceChildren(
+        "This inquiry has not been submitted because intake delivery is not connected yet.",
+      );
+    });
+
+    form?.addEventListener("input", () => {
+      status?.replaceChildren();
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupGetStartedDialog, { once: true });
+  } else {
+    setupGetStartedDialog();
+  }
+</script>

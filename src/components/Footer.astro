@@ -1,0 +1,269 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer" id="contact">
+  <div class="footer-landscape" aria-hidden="true"></div>
+
+  <div class="footer-main">
+    <div class="footer-grid">
+      <div class="footer-explore">
+        <p class="footer-eyebrow">Explore</p>
+
+        <nav class="footer-nav" aria-label="Footer navigation">
+          <a href="#home">Home</a>
+          <a href="#purpose">Our purpose</a>
+          <a href="#get-started">Get started</a>
+          <a href="#faq">FAQs</a>
+          <a href="#partnership">Partnership</a>
+        </nav>
+
+        <p class="footer-small-copy">
+          More program pages will be added as locations and services are confirmed.
+        </p>
+      </div>
+
+      <section class="footer-feature" aria-labelledby="footer-title">
+        <p class="footer-eyebrow">Stay connected</p>
+        <h2 id="footer-title">A home starts with a conversation.</h2>
+        <p class="footer-feature-copy">
+          SPH will provide clear pathways for people seeking housing and the agencies
+          supporting them.
+        </p>
+
+        <form
+          class="footer-newsletter"
+          data-newsletter-form
+          aria-describedby="footer-newsletter-note footer-newsletter-status"
+        >
+          <label class="sr-only" for="footer-newsletter-email">Email address</label>
+          <div class="footer-newsletter-control">
+            <input
+              id="footer-newsletter-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              inputmode="email"
+              maxlength="254"
+              placeholder="Email address"
+              required
+            />
+            <button type="submit">Subscribe</button>
+          </div>
+          <p class="footer-newsletter-note" id="footer-newsletter-note">
+            Newsletter delivery is being connected. No email is sent or stored yet.
+          </p>
+          <p
+            class="footer-form-status"
+            id="footer-newsletter-status"
+            data-newsletter-status
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></p>
+        </form>
+      </section>
+
+      <section class="footer-contact" aria-labelledby="footer-contact-title">
+        <h2 id="footer-contact-title">
+          <button
+            class="footer-contact-trigger"
+            type="button"
+            data-contact-open
+            aria-haspopup="dialog"
+            aria-controls="contact-dialog"
+          >
+            Contact SPH
+            <span class="footer-contact-arrow" aria-hidden="true">↗</span>
+          </button>
+        </h2>
+        <p>For housing questions, agency referrals, or partnership inquiries.</p>
+        <p class="footer-contact-note">
+          Official phone and email details will be published here once confirmed.
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <div class="footer-legal">
+    <p>© {currentYear} SPH Foundation. All rights reserved.</p>
+    <p>Dignified housing within reach.</p>
+  </div>
+</footer>
+
+<dialog
+  class="contact-dialog"
+  id="contact-dialog"
+  data-contact-dialog
+  aria-labelledby="contact-dialog-title"
+  aria-describedby="contact-dialog-description"
+>
+  <div class="contact-dialog-card">
+    <button
+      class="contact-dialog-close"
+      type="button"
+      data-contact-close
+      aria-label="Close contact form"
+    >
+      <span aria-hidden="true">×</span>
+    </button>
+
+    <p class="contact-dialog-eyebrow">Contact SPH</p>
+    <h2 id="contact-dialog-title">Start a conversation.</h2>
+    <p class="contact-dialog-description" id="contact-dialog-description">
+      Ask about housing, agency referrals, or partnership opportunities.
+    </p>
+
+    <form class="contact-form" data-contact-form>
+      <div class="contact-form-field">
+        <label for="contact-name">Name</label>
+        <input
+          id="contact-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          maxlength="100"
+          required
+        />
+      </div>
+
+      <div class="contact-form-field">
+        <label for="contact-email">Email address</label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          inputmode="email"
+          maxlength="254"
+          required
+        />
+      </div>
+
+      <div class="contact-form-field contact-form-message">
+        <label for="contact-message">Message</label>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows="4"
+          maxlength="2000"
+          required
+        ></textarea>
+      </div>
+
+      <div class="contact-form-actions">
+        <button class="contact-form-submit" type="submit">
+          Send
+          <span class="contact-form-submit-orb" aria-hidden="true">↗</span>
+        </button>
+      </div>
+
+      <p
+        class="contact-form-status"
+        data-contact-status
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      ></p>
+    </form>
+  </div>
+</dialog>
+
+<script>
+  const setupFooterForms = () => {
+    const newsletterForm = document.querySelector<HTMLFormElement>(
+      "[data-newsletter-form]",
+    );
+    const newsletterStatus = document.querySelector<HTMLElement>(
+      "[data-newsletter-status]",
+    );
+
+    if (newsletterForm && newsletterForm.dataset.bound !== "true") {
+      newsletterForm.dataset.bound = "true";
+
+      newsletterForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        newsletterStatus?.replaceChildren(
+          "Signup was not submitted because newsletter delivery is not connected yet.",
+        );
+      });
+
+      newsletterForm.addEventListener("input", () => {
+        newsletterStatus?.replaceChildren();
+      });
+    }
+
+    const dialog = document.querySelector<HTMLDialogElement>("[data-contact-dialog]");
+
+    if (!dialog || dialog.dataset.bound === "true") return;
+
+    dialog.dataset.bound = "true";
+    const openers = document.querySelectorAll<HTMLElement>("[data-contact-open]");
+    const closeButton = dialog.querySelector<HTMLButtonElement>("[data-contact-close]");
+    const nameInput = dialog.querySelector<HTMLInputElement>("#contact-name");
+    const contactForm = dialog.querySelector<HTMLFormElement>("[data-contact-form]");
+    const contactStatus = dialog.querySelector<HTMLElement>("[data-contact-status]");
+    let lastTrigger: HTMLElement | null = null;
+
+    const openDialog = (opener: HTMLElement) => {
+      lastTrigger = opener;
+      contactStatus?.replaceChildren();
+
+      if (typeof dialog.showModal === "function") {
+        if (!dialog.open) dialog.showModal();
+      } else {
+        dialog.setAttribute("open", "");
+      }
+
+      document.documentElement.classList.add("has-contact-dialog");
+      window.requestAnimationFrame(() => nameInput?.focus());
+    };
+
+    const closeDialog = () => {
+      if (typeof dialog.close === "function") {
+        dialog.close();
+      } else {
+        dialog.removeAttribute("open");
+        document.documentElement.classList.remove("has-contact-dialog");
+        lastTrigger?.focus();
+        lastTrigger = null;
+      }
+    };
+
+    openers.forEach((opener) => {
+      opener.addEventListener("click", (event) => {
+        event.preventDefault();
+        openDialog(opener);
+      });
+    });
+
+    closeButton?.addEventListener("click", closeDialog);
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) closeDialog();
+    });
+
+    dialog.addEventListener("close", () => {
+      document.documentElement.classList.remove("has-contact-dialog");
+      lastTrigger?.focus();
+      lastTrigger = null;
+    });
+
+    contactForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      contactStatus?.replaceChildren(
+        "Your message was not sent because SPH’s contact inbox is not connected yet.",
+      );
+    });
+
+    contactForm?.addEventListener("input", () => {
+      contactStatus?.replaceChildren();
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupFooterForms, { once: true });
+  } else {
+    setupFooterForms();
+  }
+</script>

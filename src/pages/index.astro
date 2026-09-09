@@ -1,0 +1,29 @@
+---
+import Hero from "../components/Hero.astro";
+import Purpose from "../components/Purpose.astro";
+import HousingProgram from "../components/HousingProgram.astro";
+import WaysToGetStarted from "../components/WaysToGetStarted.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import Faq from "../components/Faq.astro";
+import Partnership from "../components/Partnership.astro";
+import Footer from "../components/Footer.astro";
+import GetStartedDialog from "../components/GetStartedDialog.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="SPH Foundation | Dignified Housing Within Reach"
+  description="SPH Foundation is developing a housing program focused on safe, stable, and dignified places to live."
+>
+  <main>
+    <Hero />
+    <Purpose />
+    <HousingProgram />
+    <WaysToGetStarted />
+    <HowItWorks />
+    <Faq />
+    <Partnership />
+  </main>
+  <Footer />
+  <GetStartedDialog />
+</BaseLayout>
