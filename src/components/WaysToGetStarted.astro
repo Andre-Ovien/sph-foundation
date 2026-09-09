@@ -1,5 +1,6 @@
 ---
 import { Building2, HousePlus } from "@lucide/astro";
+import ActionArrow from "./ActionArrow.astro";
 ---
 
 <section class="get-started-section" id="get-started" aria-labelledby="get-started-title">
@@ -23,7 +24,7 @@ import { Building2, HousePlus } from "@lucide/astro";
           aria-controls="get-started-dialog"
         >
           Share your housing needs
-          <span aria-hidden="true">↗</span>
+          <span aria-hidden="true"><ActionArrow /></span>
         </a>
       </article>
 
@@ -43,10 +44,79 @@ import { Building2, HousePlus } from "@lucide/astro";
           aria-controls="get-started-dialog"
         >
           Begin an agency referral
-          <span aria-hidden="true">↗</span>
+          <span aria-hidden="true"><ActionArrow /></span>
         </a>
       </article>
     </div>
 
   </div>
 </section>
+
+<script>
+  const section = document.querySelector<HTMLElement>(".get-started-section");
+  const track = section?.querySelector<HTMLElement>(".get-started-grid");
+  const cards = Array.from(track?.querySelectorAll<HTMLElement>(".pathway-card") ?? []);
+  if (section && track && cards.length === 2) {
+    const mobile = matchMedia("(max-width: 860px)");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let active = 0;
+    let visible = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let animations: Animation[] = [];
+    const enabled = () => mobile.matches && !reduced.matches;
+    const stop = () => clearTimeout(timer);
+    const schedule = () => {
+      stop();
+      if (!enabled() || !visible || document.hidden) return;
+      timer = setTimeout(async () => {
+        if (section.contains(document.activeElement) || document.querySelector("dialog[open]")) {
+          schedule();
+          return;
+        }
+        const outgoing = cards[active];
+        active = (active + 1) % cards.length;
+        const incoming = cards[active];
+        outgoing.inert = true;
+        outgoing.setAttribute("aria-hidden", "true");
+        incoming.inert = false;
+        incoming.removeAttribute("aria-hidden");
+        const options = { duration: 600, easing: "cubic-bezier(.4,0,.2,1)", fill: "forwards" as FillMode };
+        animations = [
+          outgoing.animate([{ transform: "translateX(0)" }, { transform: "translateX(-110%)" }], options),
+          incoming.animate([{ transform: "translateX(110%)" }, { transform: "translateX(0)" }], options),
+        ];
+        const running = animations;
+        await Promise.allSettled(running.map(animation => animation.finished));
+        if (animations !== running) return;
+        outgoing.style.transform = "translateX(110%)";
+        incoming.style.transform = "translateX(0)";
+        running.forEach(animation => animation.cancel());
+        animations = [];
+        if (enabled()) schedule();
+      }, 3000);
+    };
+    const setup = () => {
+      stop();
+      animations.forEach(animation => animation.cancel());
+      animations = [];
+      active = 0;
+      track.classList.toggle("is-carousel", enabled());
+      cards.forEach((card, index) => {
+        card.style.transform = enabled() && index !== active ? "translateX(110%)" : "";
+        card.inert = enabled() && index !== active;
+        if (card.inert) card.setAttribute("aria-hidden", "true");
+        else card.removeAttribute("aria-hidden");
+      });
+      schedule();
+    };
+    section.addEventListener("focusout", schedule);
+    document.addEventListener("visibilitychange", schedule);
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      schedule();
+    }, { threshold: 0.25 }).observe(track);
+    mobile.addEventListener("change", setup);
+    reduced.addEventListener("change", setup);
+    setup();
+  }
+</script>

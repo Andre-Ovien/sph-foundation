@@ -1,3 +1,7 @@
+---
+import ActionArrow from "./ActionArrow.astro";
+---
+
 <section class="site-shell" aria-label="SPH Foundation introduction">
   <header class="site-header">
     <a class="wordmark" href="#home" aria-label="SPH Foundation home">
@@ -26,7 +30,9 @@
       aria-controls="get-started-dialog"
     >
       Get started
-      <span class="action-orb" aria-hidden="true">↗</span>
+      <span class="action-orb" aria-hidden="true">
+        <ActionArrow />
+      </span>
     </a>
   </header>
 
@@ -64,7 +70,7 @@
         aria-controls="get-started-dialog"
       >
         Share your housing needs
-        <span aria-hidden="true">↗</span>
+        <span aria-hidden="true"><ActionArrow /></span>
       </a>
     </div>
 

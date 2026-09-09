@@ -15,9 +15,10 @@ const { title, description } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#f6f2e8" />
+    <meta name="theme-color" content="#f6f2e8" media="(min-width: 861px)" />
+    <meta name="theme-color" content="#304b53" media="(max-width: 860px)" />
     <link rel="preload" as="image" href="/images/sph-housing-concept.jpg" fetchpriority="high" />
     <title>{title}</title>
   </head>

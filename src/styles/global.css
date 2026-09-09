@@ -1846,9 +1846,7 @@
     overscroll-behavior: contain;
     border: 1px solid rgba(21, 35, 31, 0.2);
     border-radius: clamp(1.1rem, 2.4vw, 1.55rem);
-    background:
-      radial-gradient(circle at 100% 0, rgba(241, 210, 125, 0.3), transparent 34%),
-      var(--warm-cream);
+    background: var(--warm-cream);
     color: var(--ink);
     box-shadow: 0 28px 90px rgba(3, 18, 14, 0.42);
   }
@@ -1856,9 +1854,7 @@
   .start-dialog {
     width: min(calc(100% - 2rem), 820px);
     border-color: rgba(21, 35, 31, 0.16);
-    background:
-      radial-gradient(circle at 94% 4%, rgba(241, 210, 125, 0.34), transparent 25%),
-      linear-gradient(145deg, #f8f3e9 0%, #f0e8da 100%);
+    background: var(--warm-cream);
   }
 
   .start-dialog-card {
@@ -1987,7 +1983,7 @@
     opacity: 0;
   }
 
-  .start-pathway-option span {
+  .start-pathway-option > span {
     display: flex;
     min-height: 38px;
     align-items: center;
@@ -2024,6 +2020,45 @@
 
   .start-form-panel[hidden] {
     display: none;
+  }
+
+  .start-screening-group {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin: 0.5rem 0 0;
+    padding: 0.85rem;
+    border: 1px solid rgba(21, 35, 31, 0.16);
+    border-radius: 1rem;
+  }
+
+  .start-screening-group {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .start-screening-group p {
+    margin: 0 0 0.8rem;
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .start-screening-group > label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-top: 0.7rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .start-screening-group input {
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    margin-top: 0.15rem;
+    accent-color: var(--forest-950);
   }
 
   .contact-form-field {
@@ -2271,18 +2306,46 @@
   }
 
   @media (max-width: 860px) {
+    .get-started-grid.is-carousel {
+      grid-template-columns: minmax(0, 1fr);
+      overflow: hidden;
+      padding: 0 10px 12px 0;
+    }
+
+    .get-started-grid.is-carousel .pathway-card {
+      grid-area: 1 / 1;
+      min-width: 0;
+    }
+
+    .get-started-tab {
+      padding: 0.85rem 1.25rem;
+      font-size: 1rem;
+      box-shadow: 4px 4px 0 rgba(12, 43, 35, 0.14);
+    }
+
+    html {
+      background: #304b53;
+    }
+
+    body {
+      background: transparent;
+    }
+
     .partnership-stage {
       --partnership-card-half: min(37%, 325px);
     }
 
     .site-shell {
       padding: 0;
+      background: #304b53;
     }
 
     .site-header {
       grid-template-columns: 1fr auto;
-      min-height: 78px;
-      padding-inline: 1rem;
+      min-height: calc(78px + env(safe-area-inset-top, 0px));
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-left: max(1rem, env(safe-area-inset-left, 0px));
+      padding-right: max(1rem, env(safe-area-inset-right, 0px));
     }
 
     .primary-nav {
@@ -2300,6 +2363,7 @@
 
     .hero-shade {
       background:
+        linear-gradient(180deg, #304b53 0px, rgba(48, 75, 83, 0) 130px),
         linear-gradient(180deg, rgba(7, 29, 23, 0.72) 0%, rgba(7, 29, 23, 0.26) 43%, rgba(7, 29, 23, 0.85) 100%),
         linear-gradient(90deg, rgba(7, 29, 23, 0.5), transparent 82%);
     }
@@ -2308,7 +2372,11 @@
       width: 100%;
       min-height: auto;
       justify-content: flex-start;
-      padding: 7rem 1.5rem 0;
+      padding: calc(13.75rem + env(safe-area-inset-top, 0px)) 1.5rem 0;
+    }
+
+    .hero-action {
+      display: none;
     }
 
     h1 {
@@ -2353,6 +2421,11 @@
 
     .apartment-floor {
       min-height: clamp(30rem, 78vw, 42rem);
+    }
+
+    .apartment-floor-3 {
+      background-image: url("/images/housing-options/two-bedroom-mobile.webp");
+      background-position: center;
     }
 
     .housing-sequence-ready .apartment-floor {
@@ -2490,11 +2563,11 @@
 
   @media (max-width: 560px) {
     .site-header {
-      min-height: 72px;
+      min-height: calc(72px + env(safe-area-inset-top, 0px));
     }
 
     .get-started-tab {
-      width: calc(100% - 2.25rem);
+      width: max-content;
       padding-inline: 1rem;
       font-size: 1rem;
     }
@@ -2599,7 +2672,7 @@
     }
 
     .hero-content {
-      padding: 6.5rem 1.15rem 0;
+      padding: calc(13.25rem + env(safe-area-inset-top, 0px)) 1.15rem 0;
     }
 
     h1 {
@@ -2742,8 +2815,10 @@
     }
 
     .partnership-card a {
-      width: 100%;
-      justify-content: space-between;
+      display: flex;
+      width: fit-content;
+      margin-inline: auto;
+      justify-content: center;
     }
 
     .partnership-arrow {
@@ -2822,8 +2897,18 @@
     }
 
     .start-pathway-choice {
-      grid-template-columns: 1fr;
-      border-radius: 1rem;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      border-radius: 999px;
+    }
+
+    .start-pathway-detail {
+      display: none;
+    }
+
+    .start-pathway-option > span {
+      min-height: 44px;
+      padding-inline: 0.5rem;
+      white-space: nowrap;
     }
 
     .contact-form-field,
