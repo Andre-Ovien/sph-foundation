@@ -1,0 +1,195 @@
+---
+const voices = [
+  {
+    name: "Maya R.",
+    message: "A stable home would give my family room to plan beyond the next month.",
+  },
+  {
+    name: "Denise K.",
+    message: "Clear information makes it easier to understand what the next step should be.",
+  },
+  {
+    name: "Marcus T.",
+    message: "Affordable housing should still feel safe, calm, and dignified.",
+  },
+  {
+    name: "Alicia B.",
+    message: "Families need a steady place where everyday routines can grow.",
+  },
+  {
+    name: "Jordan W.",
+    message: "A clear referral process would help caseworkers support people with confidence.",
+  },
+  {
+    name: "Nicole S.",
+    message: "Reliable housing can make work, school, and appointments easier to manage.",
+  },
+  {
+    name: "Terrence L.",
+    message: "Knowing the costs upfront would make planning feel possible.",
+  },
+  {
+    name: "Brianna C.",
+    message: "A well-kept home can make a new chapter feel real.",
+  },
+  {
+    name: "Andre P.",
+    message: "People deserve support that feels respectful, straightforward, and human.",
+  },
+  {
+    name: "Keisha M.",
+    message: "Stability begins when tomorrow’s housing is no longer uncertain.",
+  },
+  {
+    name: "Raymond D.",
+    message: "Strong agency partnerships can help families avoid falling through the gaps.",
+  },
+  {
+    name: "Tasha G.",
+    message: "Even a small sense of home can create room for hope.",
+  },
+  {
+    name: "Olivia H.",
+    message: "A home should be somewhere you can settle, not simply stay.",
+  },
+  {
+    name: "Cameron J.",
+    message: "The right support can make a difficult transition feel less overwhelming.",
+  },
+  {
+    name: "Imani F.",
+    message: "A safe place to live creates space to focus on everything else.",
+  },
+];
+
+const voicesWithAvatars = voices.map((voice, index) => ({
+  ...voice,
+  avatar: `/images/testimonials/portrait-${String(index + 1).padStart(2, "0")}.webp`,
+}));
+
+const voiceRows = [
+  voicesWithAvatars.slice(0, 5),
+  voicesWithAvatars.slice(5, 10),
+  voicesWithAvatars.slice(10, 15),
+];
+const loopCopies = [0, 1, 2, 3];
+---
+
+<section
+  class="voices-section"
+  id="voices"
+  aria-labelledby="voices-title"
+  data-voices-section
+>
+  <div class="voices-shell">
+    <div class="voices-stream">
+      <p class="sr-only" id="voices-motion-note">
+        Sample testimonial cards move in three rows. Focus or hover over the messages to
+        pause the movement.
+      </p>
+
+      <div
+        class="voices-marquee"
+        role="region"
+        aria-label="Sample community testimonials"
+        aria-describedby="voices-motion-note"
+        tabindex="0"
+      >
+        {
+          voiceRows.map((row) => (
+            <div class="voices-lane">
+              <div class="voices-lane-track">
+                {loopCopies.map((copyIndex) => (
+                  <div
+                    class="voices-lane-group"
+                    role={copyIndex === 0 ? "list" : undefined}
+                    aria-hidden={copyIndex === 0 ? undefined : "true"}
+                  >
+                    {row.map((voice) => (
+                      <article
+                        class="voice-item"
+                        role={copyIndex === 0 ? "listitem" : undefined}
+                      >
+                        <img
+                          class="voice-avatar"
+                          src={voice.avatar}
+                          width="160"
+                          height="160"
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <div class="voice-message">
+                          <p class="voice-name">{voice.name}</p>
+                          <blockquote class="voice-bubble">
+                            <p>{voice.message}</p>
+                          </blockquote>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="voices-panel">
+      <p class="voices-eyebrow">Testimonials</p>
+      <h2 id="voices-title">Every story begins with somewhere to feel steady.</h2>
+      <p class="voices-panel-copy">
+        Real participant reflections will live here once SPH has permission to share
+        their words and photographs.
+      </p>
+      <p class="voices-preview">Synthetic portraits and sample messages for layout only.</p>
+      <button type="button" data-voices-toggle aria-pressed="false" hidden>
+        <span data-voices-toggle-label>Pause</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  const voicesSection = document.querySelector<HTMLElement>("[data-voices-section]");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (voicesSection && !reduceMotion.matches) {
+    const toggle = voicesSection.querySelector<HTMLButtonElement>("[data-voices-toggle]");
+    const toggleLabel = voicesSection.querySelector<HTMLElement>(
+      "[data-voices-toggle-label]",
+    );
+
+    if (toggle && toggleLabel) {
+      let userPaused = false;
+      let outsideViewport = false;
+
+      const updateMotion = () => {
+        voicesSection.classList.toggle("is-paused", userPaused || outsideViewport);
+        toggle.setAttribute("aria-pressed", String(userPaused));
+        toggleLabel.textContent = userPaused ? "Resume" : "Pause";
+      };
+
+      voicesSection.classList.add("is-moving");
+      toggle.hidden = false;
+
+      toggle.addEventListener("click", () => {
+        userPaused = !userPaused;
+        updateMotion();
+      });
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            outsideViewport = !entry.isIntersecting;
+            updateMotion();
+          },
+          { threshold: 0.05 },
+        );
+
+        observer.observe(voicesSection);
+      }
+    }
+  }
+</script>

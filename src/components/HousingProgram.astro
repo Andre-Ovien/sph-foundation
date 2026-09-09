@@ -1,0 +1,165 @@
+---
+const homeTypes = [
+  {
+    title: "Studio apartment",
+    description: "A compact, self-contained option designed for a smaller household.",
+  },
+  {
+    title: "1 bedroom",
+    description: "A private bedroom paired with a separate everyday living area.",
+  },
+  {
+    title: "2 bedrooms",
+    description: "Additional sleeping space for households that may need more room.",
+  },
+];
+
+// Reserved for the future program-details section.
+const futureProgramDetails = [
+  {
+    title: "Affordability",
+    copy: "Lower-cost housing is the goal. Final rates will be shared once confirmed.",
+  },
+  {
+    title: "Utilities",
+    copy: "Included services will be listed clearly for every available home.",
+  },
+  {
+    title: "Length of stay",
+    copy: "Shorter- and longer-term arrangements are being considered.",
+  },
+];
+---
+
+<section
+  class="housing-program"
+  id="housing-program"
+  aria-labelledby="housing-program-title"
+  data-housing-program
+>
+  <div class="housing-program-stage">
+    <header class="housing-program-intro">
+      <div class="housing-program-heading">
+        <h2 class="housing-program-title" id="housing-program-title">
+          Housing shaped around real household needs.
+        </h2>
+        <p>
+          SPH is developing a housing model with three intended home types. Final
+          locations, availability, and occupancy guidelines are still being confirmed.
+        </p>
+      </div>
+    </header>
+
+    <div class="apartment-sequence" data-program-track>
+      <div class="apartment-stack" aria-label="Illustrative views of intended home types">
+        {
+          homeTypes.map((home, index) => (
+            <div
+              class={`apartment-floor apartment-floor-${index + 1}`}
+              role="img"
+              aria-label={`${home.title}, illustrative interior`}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="housing-program-ledger" aria-label="Intended home types">
+      {
+        homeTypes.map((home) => (
+          <div>
+            <h3>{home.title}</h3>
+            <p>{home.description}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  const setupHousingProgramMotion = () => {
+    const section = document.querySelector<HTMLElement>("[data-housing-program]");
+    const track = section?.querySelector<HTMLElement>("[data-program-track]");
+
+    if (!section || !track || section.dataset.motionBound === "true") return;
+
+    section.dataset.motionBound = "true";
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+    let activeFloor = -1;
+
+    const clamp = (value: number) => Math.min(1, Math.max(0, value));
+    const smoothstep = (value: number) => value * value * (3 - 2 * value);
+    const phaseProgress = (value: number, start: number, end: number) =>
+      smoothstep(clamp((value - start) / (end - start)));
+
+    const render = () => {
+      frame = 0;
+      if (!section.classList.contains("housing-sequence-ready")) return;
+
+      const trackRect = track.getBoundingClientRect();
+      const viewportHeight = Math.max(document.documentElement.clientHeight, 1);
+      const travel = Math.max(trackRect.height - viewportHeight, 1);
+      const scrollProgress = clamp(-trackRect.top / travel);
+      const entryDistance = viewportHeight * 0.78;
+      const studioProgress = smoothstep(
+        clamp((entryDistance - trackRect.top) / entryDistance),
+      );
+      const oneBedroomProgress = phaseProgress(scrollProgress, 0.1, 0.42);
+      const twoBedroomProgress = phaseProgress(scrollProgress, 0.55, 0.87);
+
+      track.style.setProperty("--studio-y", `${(1 - studioProgress) * 14}%`);
+      track.style.setProperty("--studio-opacity", studioProgress.toFixed(3));
+      track.style.setProperty(
+        "--one-bedroom-x",
+        `${(oneBedroomProgress - 1) * 102}%`,
+      );
+      track.style.setProperty(
+        "--two-bedroom-x",
+        `${(1 - twoBedroomProgress) * 102}%`,
+      );
+
+      const nextFloor =
+        twoBedroomProgress >= 0.5 ? 2 : oneBedroomProgress >= 0.5 ? 1 : 0;
+
+      if (nextFloor !== activeFloor) {
+        activeFloor = nextFloor;
+        section.dataset.activeFloor = String(nextFloor);
+      }
+    };
+
+    const requestRender = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(render);
+    };
+
+    const syncMotionMode = () => {
+      const canEnhance =
+        !reducedMotion.matches && CSS.supports("position", "sticky");
+
+      section.classList.toggle("housing-sequence-ready", canEnhance);
+
+      if (!canEnhance) {
+        track.removeAttribute("style");
+        section.removeAttribute("data-active-floor");
+        activeFloor = -1;
+      }
+
+      requestRender();
+    };
+
+    window.addEventListener("scroll", requestRender, { passive: true });
+    window.addEventListener("resize", requestRender, { passive: true });
+    window.addEventListener("orientationchange", requestRender, { passive: true });
+    window.addEventListener("pageshow", requestRender, { passive: true });
+    reducedMotion.addEventListener("change", syncMotionMode);
+    syncMotionMode();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupHousingProgramMotion, { once: true });
+  } else {
+    setupHousingProgramMotion();
+  }
+</script>

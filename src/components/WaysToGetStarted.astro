@@ -1,0 +1,52 @@
+---
+import { Building2, HousePlus } from "@lucide/astro";
+---
+
+<section class="get-started-section" id="get-started" aria-labelledby="get-started-title">
+  <div class="get-started-board">
+    <h2 class="get-started-tab" id="get-started-title">Ways to get started</h2>
+
+    <div class="get-started-grid">
+      <article class="pathway-card pathway-card-individual">
+        <span class="pathway-icon" aria-hidden="true"><HousePlus /></span>
+        <p class="pathway-eyebrow">Individuals &amp; households</p>
+        <h3>Tell us about the housing support you need.</h3>
+        <p class="pathway-copy">
+          Share the current situation, household size, timing, and the best way for the
+          SPH team to follow up.
+        </p>
+        <a
+          href="#contact"
+          data-start-open
+          data-start-pathway="individual"
+          aria-haspopup="dialog"
+          aria-controls="get-started-dialog"
+        >
+          Share your housing needs
+          <span aria-hidden="true">↗</span>
+        </a>
+      </article>
+
+      <article class="pathway-card pathway-card-agency">
+        <span class="pathway-icon" aria-hidden="true"><Building2 /></span>
+        <p class="pathway-eyebrow">Agencies &amp; caseworkers</p>
+        <h3>Refer someone your organization supports.</h3>
+        <p class="pathway-copy">
+          Introduce the housing need and provide the caseworker contact details required
+          for a clear follow-up.
+        </p>
+        <a
+          href="#contact"
+          data-start-open
+          data-start-pathway="agency"
+          aria-haspopup="dialog"
+          aria-controls="get-started-dialog"
+        >
+          Begin an agency referral
+          <span aria-hidden="true">↗</span>
+        </a>
+      </article>
+    </div>
+
+  </div>
+</section>

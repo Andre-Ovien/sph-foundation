@@ -1,0 +1,128 @@
+---
+import { HandHelping, House, Landmark } from "@lucide/astro";
+---
+
+<section class="partnership-section" id="partnership" aria-labelledby="partnership-title">
+  <div class="partnership-inner">
+    <p class="partnership-intro">
+      Public
+      <span class="partnership-phrase">
+        agencies
+        <span class="partnership-inline-mark mark-blue" aria-hidden="true"><Landmark /></span>
+      </span>, service
+      <span class="partnership-phrase">
+        organizations
+        <span class="partnership-inline-mark mark-gold" aria-hidden="true"><HandHelping /></span>
+      </span> &amp; housing
+      <span class="partnership-phrase">
+        partners
+        <span class="partnership-inline-mark mark-clay" aria-hidden="true"><House /></span>
+      </span>
+      can help turn a housing vision into lasting stability.
+    </p>
+
+    <div class="partnership-stage">
+      <svg
+        class="partnership-arrow partnership-arrow-left"
+        viewBox="0 0 300 360"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          class="partnership-arrow-path"
+          pathLength="1"
+          d="M 250 16 C 190 25 128 80 135 135 C 140 166 165 187 205 192 C 230 157 272 159 271 185 C 270 211 226 218 205 192 C 187 210 187 236 210 247 C 229 257 248 249 240 238 C 231 227 207 232 193 252 C 168 290 185 326 224 334 C 250 340 274 335 294 328"
+        />
+        <path
+          class="partnership-arrow-head"
+          pathLength="1"
+          d="M 278 314 L 294 328 L 276 341"
+        />
+      </svg>
+
+      <div class="partnership-card">
+        <p>Before we build what’s next</p>
+        <h2 id="partnership-title">Could we make housing more attainable together?</h2>
+        <a href="#contact">
+          Reach out about partnership
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <svg
+        class="partnership-arrow partnership-arrow-right"
+        viewBox="0 0 300 360"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path
+          class="partnership-arrow-path"
+          pathLength="1"
+          d="M 250 16 C 190 25 128 80 135 135 C 140 166 165 187 205 192 C 230 157 272 159 271 185 C 270 211 226 218 205 192 C 187 210 187 236 210 247 C 229 257 248 249 240 238 C 231 227 207 232 193 252 C 168 290 185 326 224 334 C 250 340 274 335 294 328"
+        />
+        <path
+          class="partnership-arrow-head"
+          pathLength="1"
+          d="M 278 314 L 294 328 L 276 341"
+        />
+      </svg>
+    </div>
+  </div>
+</section>
+
+<script>
+  const setupPartnershipArrowMotion = () => {
+    const section = document.querySelector<HTMLElement>(".partnership-section");
+    const stage = section?.querySelector<HTMLElement>(".partnership-stage");
+
+    if (!section || !stage || section.dataset.arrowMotionBound === "true") return;
+
+    section.dataset.arrowMotionBound = "true";
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0;
+
+    const render = () => {
+      frame = 0;
+
+      if (reducedMotion.matches) {
+        section.classList.remove("partnership-motion-ready");
+        section.style.removeProperty("--arrow-line-offset");
+        section.style.removeProperty("--arrow-head-offset");
+        section.style.removeProperty("--arrow-line-opacity");
+        section.style.removeProperty("--arrow-head-opacity");
+        return;
+      }
+
+      section.classList.add("partnership-motion-ready");
+      const viewportHeight = window.innerHeight || 1;
+      const stageTop = stage.getBoundingClientRect().top;
+      const start = viewportHeight * 0.9;
+      const finish = viewportHeight * 0.25;
+      const progress = Math.min(1, Math.max(0, (start - stageTop) / (start - finish)));
+      const headProgress = Math.min(1, Math.max(0, (progress - 0.88) / 0.12));
+
+      section.style.setProperty("--arrow-line-offset", (1 - progress).toFixed(4));
+      section.style.setProperty("--arrow-head-offset", (1 - headProgress).toFixed(4));
+      section.style.setProperty("--arrow-line-opacity", progress > 0 ? "1" : "0");
+      section.style.setProperty("--arrow-head-opacity", headProgress > 0 ? "1" : "0");
+    };
+
+    const requestRender = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(render);
+    };
+
+    window.addEventListener("scroll", requestRender, { passive: true });
+    window.addEventListener("resize", requestRender, { passive: true });
+    window.addEventListener("orientationchange", requestRender, { passive: true });
+    window.addEventListener("pageshow", requestRender, { passive: true });
+    reducedMotion.addEventListener("change", requestRender);
+    render();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupPartnershipArrowMotion, { once: true });
+  } else {
+    setupPartnershipArrowMotion();
+  }
+</script>

@@ -1,0 +1,41 @@
+---
+const steps = [
+  {
+    title: "Choose the right starting point",
+    copy:
+      "Reach out for yourself or your household, or begin an agency referral for someone you support.",
+  },
+  {
+    title: "Share the housing need",
+    copy:
+      "Tell SPH about the current situation, household size, timing, and the best way to follow up.",
+  },
+  {
+    title: "Talk through what comes next",
+    copy:
+      "As program details are confirmed, the SPH team will explain availability, requirements, and any formal next steps before an application begins.",
+  },
+];
+---
+
+<section class="how-it-works-section" id="how-it-works" aria-labelledby="how-it-works-title">
+  <div class="how-it-works-panel">
+    <h2 class="how-it-works-rail" id="how-it-works-title">How it works</h2>
+
+    <div class="how-it-works-steps">
+      {
+        steps.map((step, index) => (
+          <details class={`how-it-works-step how-it-works-step-${index + 1}`} name="how-it-works">
+            <summary>
+              <span>{step.title}</span>
+              <span class="how-it-works-toggle" aria-hidden="true"></span>
+            </summary>
+            <div class="how-it-works-answer">
+              <p>{step.copy}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

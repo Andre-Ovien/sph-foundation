@@ -1,0 +1,71 @@
+---
+const statement =
+  "SPH Foundation exists to create pathways to safe, stable, affordable housing—helping individuals and families move forward with dignity, security, and lasting support.";
+
+const words = statement.split(" ");
+---
+
+<section class="purpose-motion" id="purpose" aria-labelledby="purpose-title" data-purpose>
+  <div class="purpose-stage">
+    <div class="purpose-inner">
+      <p class="purpose-label">
+        <span aria-hidden="true"></span>
+        Our purpose
+      </p>
+
+      <h2 class="purpose-statement" aria-hidden="true">
+        {
+          words.map((word, index) => (
+            <span class="purpose-word" style={`--word-index: ${index}`}>{word} </span>
+          ))
+        }
+      </h2>
+      <h2 class="sr-only" id="purpose-title">{statement}</h2>
+    </div>
+  </div>
+</section>
+
+<script>
+  const purposeSection = document.querySelector<HTMLElement>("[data-purpose]");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (purposeSection && !reduceMotion.matches) {
+    const words = Array.from(purposeSection.querySelectorAll<HTMLElement>(".purpose-word"));
+    let ticking = false;
+
+    purposeSection.classList.add("is-enhanced");
+
+    const clamp = (value: number, minimum = 0, maximum = 1) =>
+      Math.min(maximum, Math.max(minimum, value));
+
+    const render = () => {
+      const rect = purposeSection.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+      const revealStart = viewportHeight * 0.96;
+      const revealEnd = viewportHeight * 0.14;
+      const textProgress = clamp(
+        (revealStart - rect.top) / Math.max(1, revealStart - revealEnd),
+      );
+
+      words.forEach((word, index) => {
+        const wordProgress = clamp(textProgress * (words.length + 3) - index);
+        word.style.setProperty("--word-progress", wordProgress.toFixed(3));
+      });
+
+      ticking = false;
+    };
+
+    const requestRender = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(render);
+        ticking = true;
+      }
+    };
+
+    render();
+    window.addEventListener("scroll", requestRender, { passive: true });
+    window.addEventListener("resize", requestRender, { passive: true });
+    window.addEventListener("orientationchange", requestRender, { passive: true });
+    window.addEventListener("pageshow", requestRender, { passive: true });
+  }
+</script>

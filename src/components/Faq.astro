@@ -1,0 +1,67 @@
+---
+const faqs = [
+  {
+    question: "What is SPH Foundation preparing?",
+    answer:
+      "SPH Foundation is developing a housing program intended to help individuals and families access safe, stable, and more affordable places to live. Locations, program structure, and partnership details are still being confirmed.",
+  },
+  {
+    question: "Is the housing program accepting applications?",
+    answer:
+      "Not yet. When the program is ready, SPH will explain the formal inquiry or application process here. Sharing interest will not be an application or a guarantee of placement.",
+  },
+  {
+    question: "Who will be eligible for housing?",
+    answer:
+      "Final eligibility criteria have not been published. Household needs, income requirements, length of stay, and any supporting information will be explained clearly before submissions open.",
+  },
+  {
+    question: "Can an agency make a referral?",
+    answer:
+      "A separate referral pathway is planned for caseworkers and referring agencies. The required information and consent process will be published before that pathway opens.",
+  },
+  {
+    question: "Where will housing be available, and what will it cost?",
+    answer:
+      "Operating locations, rates, included utilities, and other program terms are still being confirmed. SPH will publish those details before anyone is asked to apply or make a commitment.",
+  },
+];
+---
+
+<section class="faq-section" id="faq" aria-labelledby="faq-title">
+  <div class="faq-layout">
+    <div class="faq-intro">
+      <p class="faq-eyebrow">
+        <span aria-hidden="true"></span>
+        Frequently asked
+      </p>
+      <h2 id="faq-title">Questions? Let’s make things clear.</h2>
+      <p>
+        The program is still taking shape. These answers reflect what is confirmed today
+        and will be updated as locations, policies, and availability are finalized.
+      </p>
+      <a
+        href="#contact"
+        data-contact-open
+        aria-haspopup="dialog"
+        aria-controls="contact-dialog"
+      >
+        Contact SPH
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
+
+    <div class="faq-list">
+      {
+        faqs.map((faq, index) => (
+          <details name="sph-faq" open={index === 0}>
+            <summary>{faq.question}</summary>
+            <div class="faq-answer">
+              <p>{faq.answer}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
