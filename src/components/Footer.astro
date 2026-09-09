@@ -32,7 +32,6 @@ const currentYear = new Date().getFullYear();
         <form
           class="footer-newsletter"
           data-newsletter-form
-          aria-describedby="footer-newsletter-status"
         >
           <label class="sr-only" for="footer-newsletter-email">Email address</label>
           <div class="footer-newsletter-control">
@@ -48,14 +47,6 @@ const currentYear = new Date().getFullYear();
             />
             <button type="submit">Subscribe</button>
           </div>
-          <p
-            class="footer-form-status"
-            id="footer-newsletter-status"
-            data-newsletter-status
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-          ></p>
         </form>
       </section>
 
@@ -88,6 +79,11 @@ const currentYear = new Date().getFullYear();
     <p>Dignified housing within reach.</p>
   </div>
 </footer>
+
+<div class="newsletter-toast" data-newsletter-toast hidden>
+  <p data-newsletter-status role="status" aria-live="polite" aria-atomic="true"></p>
+  <button type="button" data-newsletter-dismiss aria-label="Dismiss newsletter notification">×</button>
+</div>
 
 <dialog
   class="contact-dialog"
@@ -179,14 +175,32 @@ const currentYear = new Date().getFullYear();
 
     if (newsletterForm && newsletterForm.dataset.bound !== "true") {
       newsletterForm.dataset.bound = "true";
+      const toast = document.querySelector<HTMLElement>('[data-newsletter-toast]');
+      let toastTimer: ReturnType<typeof setTimeout> | undefined;
+      const dismissToast = () => {
+        clearTimeout(toastTimer);
+        if (toast) toast.hidden = true;
+        newsletterStatus?.replaceChildren();
+      };
+      const showToast = (message: string, state: 'pending' | 'success' | 'error') => {
+        clearTimeout(toastTimer);
+        if (!toast) return;
+        toast.hidden = false;
+        toast.dataset.state = state;
+        newsletterStatus?.replaceChildren(message);
+        if (state === 'success') toastTimer = setTimeout(() => {
+          if (!toast.matches(':hover, :focus-within')) dismissToast();
+        }, 8000);
+      };
+      toast?.querySelector('[data-newsletter-dismiss]')?.addEventListener('click', dismissToast);
 
       newsletterForm.addEventListener("submit", (event) => {
         event.preventDefault();
-        void submitForm(newsletterForm, newsletterStatus, "newsletter");
+        void submitForm(newsletterForm, null, "newsletter", showToast);
       });
 
       newsletterForm.addEventListener("input", () => {
-        newsletterStatus?.replaceChildren();
+        if (newsletterForm.dataset.sending !== 'true') dismissToast();
       });
     }
 

@@ -1,8 +1,12 @@
-export async function submitForm(form: HTMLFormElement, status: HTMLElement | null, kind: string) {
+export async function submitForm(form: HTMLFormElement, status: HTMLElement | null, kind: string, onStatus?: (message: string, state: 'pending' | 'success' | 'error') => void) {
+  const report = (message: string, state: 'pending' | 'success' | 'error') => {
+    status?.replaceChildren(message);
+    onStatus?.(message, state);
+  };
   if (form.dataset.sending === "true") return;
   const data = new FormData(form);
   if ([...data.values()].some(value => value instanceof File && value.size > 0)) {
-    status?.replaceChildren("Document delivery is not enabled yet. Remove the selected files to send your inquiry without attachments.");
+    report("Document delivery is not enabled yet. Remove the selected files to send your inquiry without attachments.", 'error');
     return;
   }
   const fields = Object.fromEntries([...data.entries()].filter((entry) => typeof entry[1] === "string"));
@@ -15,7 +19,7 @@ export async function submitForm(form: HTMLFormElement, status: HTMLElement | nu
   const button = form.querySelector<HTMLButtonElement>('button[type="submit"]');
   form.dataset.sending = "true";
   if (button) button.disabled = true;
-  status?.replaceChildren("Sending…");
+  report("Sending…", 'pending');
   try {
     const response = await fetch("/api/forms", {
       method: "POST",
@@ -25,9 +29,9 @@ export async function submitForm(form: HTMLFormElement, status: HTMLElement | nu
     if (response.status === 429) throw new Error("Please wait a minute before trying again.");
     const result = await response.json().catch(() => ({ message: "Delivery is temporarily unavailable. Please try again." }));
     if (!response.ok) throw new Error(result.message || "We couldn’t send your message. Please try again.");
-    status?.replaceChildren(result.message);
+    report(result.message, 'success');
   } catch (error) {
-    status?.replaceChildren(error instanceof Error ? error.message : "Connection interrupted. Please try again.");
+    report(error instanceof Error ? error.message : "Connection interrupted. Please try again.", 'error');
   } finally {
     form.dataset.sending = "false";
     if (button) button.disabled = false;
