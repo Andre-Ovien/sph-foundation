@@ -1718,6 +1718,10 @@
     outline: 0;
     background: transparent;
     color: var(--ivory);
+    caret-color: var(--ivory);
+    border-radius: 999px;
+    -webkit-appearance: none;
+    appearance: none;
     font-family: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", var(--sans);
     font-size: 0.72rem;
   }
@@ -1755,6 +1759,28 @@
   .footer-newsletter button:focus-visible {
     outline: 0;
     box-shadow: none;
+  }
+
+  /* Cover the browser's autofill paint with the newsletter's own surface.
+     Keep saved-email suggestions enabled and the text/caret readable. */
+  .footer-newsletter input:-webkit-autofill,
+  .footer-newsletter input:-webkit-autofill:hover,
+  .footer-newsletter input:-webkit-autofill:focus,
+  .footer-newsletter input:-webkit-autofill:active {
+    border: 0 !important;
+    outline: 0 !important;
+    -webkit-text-fill-color: var(--ivory) !important;
+    caret-color: var(--ivory);
+    -webkit-box-shadow: 0 0 0 1000px color-mix(in srgb, white 6%, var(--forest-900)) inset !important;
+    box-shadow: 0 0 0 1000px color-mix(in srgb, white 6%, var(--forest-900)) inset !important;
+  }
+
+  .footer-newsletter input:autofill {
+    border: 0 !important;
+    outline: 0 !important;
+    color: var(--ivory) !important;
+    caret-color: var(--ivory);
+    box-shadow: 0 0 0 1000px color-mix(in srgb, white 6%, var(--forest-900)) inset !important;
   }
 
   .footer-newsletter-note,
