@@ -1,5 +1,8 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
+// Public identifier for the SPH-owned Resend broadcast segment, not a credential.
+export const NEWSLETTER_SEGMENT_ID = '657b32e3-0300-4044-bfb0-0e0da62ad780';
+
 export function normalizeEmail(value) {
   if (typeof value !== 'string') throw Error('Enter a valid email address.');
   const email = value.trim().toLowerCase();
@@ -54,7 +57,7 @@ export async function requestNewsletter(value, env, fetcher = fetch) {
   if (existing && !existing.unsubscribed) return 'You are already subscribed.';
   // Respect opt-outs: repeated public form submissions cannot silently resubscribe somebody.
   if (existing?.unsubscribed) return 'This address previously opted out. Please contact SPH if you want to subscribe again.';
-  const created = await contactRequest('', env, { method: 'POST', body: JSON.stringify({ email, unsubscribed: false }) }, fetcher);
+  const created = await contactRequest('', env, { method: 'POST', body: JSON.stringify({ email, unsubscribed: false, segments: [{ id: NEWSLETTER_SEGMENT_ID }] }) }, fetcher);
   if (!created?.id) throw Error('Subscription could not be saved. Please try again.');
   const unsubscribe = `${env.SPH_SITE_URL}/newsletter?token=${encodeURIComponent(makeToken(email, 'unsubscribe', env, 0))}`;
   try {

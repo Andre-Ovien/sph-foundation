@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { validateSubmission, deliverSubmission } from '../src/lib/form-delivery.mjs';
-import { requestNewsletter, makeToken, readToken, finishNewsletter, normalizeEmail } from '../src/lib/newsletter.mjs';
+import { requestNewsletter, makeToken, readToken, finishNewsletter, normalizeEmail, NEWSLETTER_SEGMENT_ID } from '../src/lib/newsletter.mjs';
 
 const env = { RESEND_API_KEY: 'test-send', RESEND_CONTACTS_API_KEY: 'test-contacts', NEWSLETTER_TOKEN_SECRET: 'test-secret-only', SPH_EMAIL_FROM: 'SPH <support@example.org>', SPH_EMAIL_TO: 'staff@example.org', SPH_EMAIL_REPLY_TO: 'staff@example.org', SPH_SITE_URL: 'https://example.org' };
 const response = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -50,7 +50,10 @@ test('newsletter subscribes immediately, sends one welcome, rejects duplicate an
   let creates = 0;
   const fake = async (url, opts = {}) => {
     if (url.endsWith('/emails')) { sends++; return response({ id: 'mail' }); }
-    if (opts.method === 'POST') { creates++; subscriber = { id: 'subscriber', email: 'test@example.org', unsubscribed: false }; return response(subscriber); }
+    if (opts.method === 'POST') {
+      assert.deepEqual(JSON.parse(opts.body).segments, [{ id: NEWSLETTER_SEGMENT_ID }]);
+      creates++; subscriber = { id: 'subscriber', email: 'test@example.org', unsubscribed: false }; return response(subscriber);
+    }
     if (opts.method === 'PATCH') { subscriber.unsubscribed = true; return response(subscriber); }
     return subscriber ? response(subscriber) : response({}, 404);
   };
