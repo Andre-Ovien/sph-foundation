@@ -1,11 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { validateSubmission, deliverSubmission } from '../src/lib/form-delivery.mjs';
 import { requestNewsletter, makeToken, readToken, finishNewsletter, normalizeEmail } from '../src/lib/newsletter.mjs';
 
 const env = { RESEND_API_KEY: 'test-send', RESEND_CONTACTS_API_KEY: 'test-contacts', NEWSLETTER_TOKEN_SECRET: 'test-secret-only', SPH_EMAIL_FROM: 'SPH <support@example.org>', SPH_EMAIL_TO: 'staff@example.org', SPH_EMAIL_REPLY_TO: 'staff@example.org', SPH_SITE_URL: 'https://example.org' };
 const response = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 const contact = { kind: 'contact', fields: { name: 'Test', email: 'test@example.org', message: 'Hello' } };
+
+test('unsubscribe page preserves native POST origin while keeping the token out of referrers', () => {
+  const page = readFileSync(new URL('../src/pages/newsletter.astro', import.meta.url), 'utf8');
+  assert.match(page, /headers\.set\('Referrer-Policy', 'strict-origin'\)/);
+  assert.match(page, /headers\.get\('origin'\) !== Astro\.url\.origin/);
+  assert.match(page, /Astro\.request\.method === 'POST'/);
+});
 
 test('validates required fields and email; rejects attachments and unknown pathway', () => {
   assert.equal(validateSubmission(contact).email, 'test@example.org');

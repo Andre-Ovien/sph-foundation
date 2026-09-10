@@ -3,7 +3,9 @@ import { readToken, finishNewsletter } from '../lib/newsletter.mjs';
 export const prerender = false;
 const env = { ...import.meta.env, ...process.env };
 Astro.response.headers.set('Cache-Control', 'no-store');
-Astro.response.headers.set('Referrer-Policy', 'no-referrer');
+// Preserve Origin on native form POSTs without exposing the signed token in Referer.
+// no-referrer makes browsers send Origin: null, which fails the same-origin check.
+Astro.response.headers.set('Referrer-Policy', 'strict-origin');
 Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
 Astro.response.headers.set('X-Frame-Options', 'DENY');
 Astro.response.headers.set('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'");
