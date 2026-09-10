@@ -51,7 +51,7 @@ async function sendNewsletterEmail(email, subject, text, key, env, fetcher) {
 export async function requestNewsletter(value, env, fetcher = fetch) {
   const email = normalizeEmail(value);
   const existing = await contactRequest(`/${encodeURIComponent(email)}`, env, {}, fetcher);
-  if (existing && !existing.unsubscribed) return 'You’re already subscribed. No duplicate signup was created.';
+  if (existing && !existing.unsubscribed) return 'You are already subscribed.';
   // Respect opt-outs: repeated public form submissions cannot silently resubscribe somebody.
   if (existing?.unsubscribed) return 'This address previously opted out. Please contact SPH if you want to subscribe again.';
   const created = await contactRequest('', env, { method: 'POST', body: JSON.stringify({ email, unsubscribed: false }) }, fetcher);

@@ -47,7 +47,7 @@ test('newsletter subscribes immediately, sends one welcome, rejects duplicate an
     return subscriber ? response(subscriber) : response({}, 404);
   };
   assert.match(await requestNewsletter(' Test@Example.org ', env, fake), /welcome email/);
-  assert.match(await requestNewsletter('test@example.org', env, fake), /already subscribed/);
+  assert.equal(await requestNewsletter('test@example.org', env, fake), 'You are already subscribed.');
   assert.equal(creates, 1); assert.equal(sends, 1);
   const token = makeToken('test@example.org', 'unsubscribe', env, 0);
   assert.match(await finishNewsletter(token, env, fake), /unsubscribed/);
