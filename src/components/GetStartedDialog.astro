@@ -22,7 +22,8 @@ import ActionArrow from "./ActionArrow.astro";
     <p class="start-dialog-eyebrow">Get started</p>
     <h2 id="start-dialog-title">Tell us where to begin.</h2>
     <p class="start-dialog-description" id="start-dialog-description">
-      Choose the pathway that fits, then share a few details for the SPH team.
+      Share an initial inquiry with the SPH team. Programs are in development;
+      this is not a housing application or a guarantee of placement.
     </p>
 
     <form class="contact-form start-form" data-start-form>
@@ -47,7 +48,7 @@ import ActionArrow from "./ActionArrow.astro";
             value="agency"
             data-start-pathway-choice
           />
-          <span>Agency<span class="start-pathway-detail">&nbsp;referral</span></span>
+          <span>Agency<span class="start-pathway-detail">&nbsp;inquiry</span></span>
         </label>
       </fieldset>
 
@@ -181,7 +182,7 @@ import ActionArrow from "./ActionArrow.astro";
       <section
         class="start-form-panel"
         data-start-panel="agency"
-        aria-label="Agency referral"
+        aria-label="Agency inquiry"
         hidden
       >
         <div class="contact-form-field">
@@ -262,7 +263,7 @@ import ActionArrow from "./ActionArrow.astro";
         </div>
 
         <div class="contact-form-field">
-          <label for="start-referral-name">Person being referred</label>
+          <label for="start-referral-name">Person you support</label>
           <input
             id="start-referral-name"
             name="referralName"

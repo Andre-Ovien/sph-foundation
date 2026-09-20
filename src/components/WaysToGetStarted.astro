@@ -6,6 +6,7 @@ import ActionArrow from "./ActionArrow.astro";
 <section class="get-started-section" id="get-started" aria-labelledby="get-started-title">
   <div class="get-started-board">
     <h2 class="get-started-tab" id="get-started-title">Ways to get started</h2>
+    <p class="inquiry-note">Our programs are in development. Housing applications are not currently open. You can share your interest or discuss a future partnership; an inquiry does not guarantee housing.</p>
 
     <div class="get-started-grid">
       <article class="pathway-card pathway-card-individual">
@@ -31,10 +32,10 @@ import ActionArrow from "./ActionArrow.astro";
       <article class="pathway-card pathway-card-agency">
         <span class="pathway-icon" aria-hidden="true"><Building2 /></span>
         <p class="pathway-eyebrow">Agencies &amp; caseworkers</p>
-        <h3>Refer someone your organization supports.</h3>
+        <h3>Explore a future referral partnership.</h3>
         <p class="pathway-copy">
-          Introduce the housing need and provide the caseworker contact details required
-          for a clear follow-up.
+          Introduce your organization and the housing needs you support. We’ll share
+          formal referral procedures as programs become available.
         </p>
         <a
           href="#contact"
@@ -43,7 +44,7 @@ import ActionArrow from "./ActionArrow.astro";
           aria-haspopup="dialog"
           aria-controls="get-started-dialog"
         >
-          Begin an agency referral
+          Discuss a future referral
           <span aria-hidden="true"><ActionArrow /></span>
         </a>
       </article>
@@ -51,6 +52,10 @@ import ActionArrow from "./ActionArrow.astro";
 
   </div>
 </section>
+
+<style>
+  .inquiry-note { max-width: 65ch; margin: 0 auto 2rem; padding: 0 1.25rem; text-align: center; font-size: .9rem; line-height: 1.6; color: var(--forest-900); }
+</style>
 
 <script>
   const section = document.querySelector<HTMLElement>(".get-started-section");

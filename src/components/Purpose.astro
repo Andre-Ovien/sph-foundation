@@ -1,71 +1,85 @@
 ---
-const statement =
-  "SPH Foundation exists to create pathways to safe, stable, affordable housing—helping individuals and families move forward with dignity, security, and lasting support.";
-
-const words = statement.split(" ");
+const slides = [
+  {
+    label: "Our mission",
+    statement: "Our mission is to increase access to affordable housing and supportive resources for people facing financial hardship, housing instability, and other barriers to maintaining safe housing.",
+  },
+  {
+    label: "Our vision",
+    statement: "We envision communities where individuals and families are not defined by their housing challenges and where everyone has an opportunity to access safe, stable, and affordable housing.",
+  },
+];
 ---
 
-<section class="purpose-motion" id="purpose" aria-labelledby="purpose-title" data-purpose>
+<section class="purpose-motion" id="purpose" aria-label="Our mission and vision" data-purpose>
   <div class="purpose-stage">
     <div class="purpose-inner">
-      <p class="purpose-label">
-        <span aria-hidden="true"></span>
-        Our purpose
-      </p>
-
-      <h2 class="purpose-statement" aria-hidden="true">
-        {
-          words.map((word, index) => (
-            <span class="purpose-word" style={`--word-index: ${index}`}>{word} </span>
-          ))
-        }
-      </h2>
-      <h2 class="sr-only" id="purpose-title">{statement}</h2>
+      <div class="purpose-slides">
+        {slides.map((slide, index) => (
+          <div class="purpose-slide" data-purpose-slide>
+            <p class="purpose-label"><span aria-hidden="true"></span>{slide.label}</p>
+            <h2 class="purpose-statement" id={`purpose-title-${index}`}>{slide.statement}</h2>
+          </div>
+        ))}
+      </div>
+      <div class="purpose-controls" hidden>
+        {slides.map((slide, index) => (
+          <button type="button" data-purpose-select={index} aria-pressed={index === 0}>{slide.label}</button>
+        ))}
+      </div>
     </div>
   </div>
 </section>
 
+<style>
+  .purpose-inner { padding-bottom: 2.5rem; }
+  .purpose-statement { color: var(--forest-900); }
+  .purpose-slides { display: grid; gap: 2rem; }
+  .is-rotating .purpose-slides { gap: 0; }
+  .is-rotating .purpose-slide { grid-area: 1 / 1; opacity: 0; visibility: hidden; transition: opacity 650ms ease, visibility 650ms; }
+  .is-rotating .purpose-slide.is-active { opacity: 1; visibility: visible; }
+  .purpose-controls { display: flex; gap: .5rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem; }
+  .purpose-controls[hidden] { display: none; }
+  .purpose-controls button { border: 0; border-radius: 999px; padding: .5rem .8rem; font: inherit; font-size: .75rem; background: transparent; color: var(--forest-900); cursor: pointer; }
+  .purpose-controls button[aria-pressed="true"] { background: var(--sage-100); }
+  .purpose-controls button:focus-visible { outline: 2px solid var(--forest-700); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) { .is-rotating .purpose-slide { transition: none; } }
+</style>
+
 <script>
-  const purposeSection = document.querySelector<HTMLElement>("[data-purpose]");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  if (purposeSection && !reduceMotion.matches) {
-    const words = Array.from(purposeSection.querySelectorAll<HTMLElement>(".purpose-word"));
-    let ticking = false;
-
-    purposeSection.classList.add("is-enhanced");
-
-    const clamp = (value: number, minimum = 0, maximum = 1) =>
-      Math.min(maximum, Math.max(minimum, value));
-
-    const render = () => {
-      const rect = purposeSection.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const revealStart = viewportHeight * 0.96;
-      const revealEnd = viewportHeight * 0.14;
-      const textProgress = clamp(
-        (revealStart - rect.top) / Math.max(1, revealStart - revealEnd),
-      );
-
-      words.forEach((word, index) => {
-        const wordProgress = clamp(textProgress * (words.length + 3) - index);
-        word.style.setProperty("--word-progress", wordProgress.toFixed(3));
+  const section = document.querySelector<HTMLElement>("[data-purpose]");
+  if (section) {
+    const slides = Array.from(section.querySelectorAll<HTMLElement>("[data-purpose-slide]"));
+    const selectors = Array.from(section.querySelectorAll<HTMLButtonElement>("[data-purpose-select]"));
+    const controls = section.querySelector<HTMLElement>(".purpose-controls")!;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    let active = 0;
+    let visible = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const stop = () => { clearTimeout(timer); timer = undefined; };
+    const show = (index: number) => {
+      active = index;
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("is-active", i === active);
+        slide.setAttribute("aria-hidden", String(i !== active));
+        slide.inert = i !== active;
+        selectors[i].setAttribute("aria-pressed", String(i === active));
       });
-
-      ticking = false;
     };
-
-    const requestRender = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(render);
-        ticking = true;
-      }
+    const schedule = () => {
+      stop();
+      if (!visible || document.hidden || reducedMotion.matches || section.contains(document.activeElement)) return;
+      timer = setTimeout(() => { show((active + 1) % slides.length); schedule(); }, 10000);
     };
-
-    render();
-    window.addEventListener("scroll", requestRender, { passive: true });
-    window.addEventListener("resize", requestRender, { passive: true });
-    window.addEventListener("orientationchange", requestRender, { passive: true });
-    window.addEventListener("pageshow", requestRender, { passive: true });
+    show(0);
+    section.classList.add("is-rotating");
+    controls.hidden = false;
+    selectors.forEach((button, index) => button.addEventListener("click", () => { show(index); schedule(); }));
+    reducedMotion.addEventListener("change", schedule);
+    document.addEventListener("visibilitychange", schedule);
+    section.addEventListener("focusin", stop);
+    section.addEventListener("focusout", () => setTimeout(schedule, 0));
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; schedule(); }, { threshold: 0.35 }).observe(section);
+    schedule();
   }
 </script>

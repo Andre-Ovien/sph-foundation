@@ -40,12 +40,29 @@ const futureProgramDetails = [
   <div class="housing-program-stage">
     <header class="housing-program-intro">
       <div class="housing-program-heading">
-        <h2 class="housing-program-title" id="housing-program-title">
-          Housing shaped around real household needs.
+        <h2 class="housing-program-title kinetic-title" id="housing-program-title" data-kinetic-title>
+          <span class="sr-only">Because everyone deserves a safe place to call home.</span>
+          <span aria-hidden="true">
+            {"Because everyone deserves".split(" ").map(word => (
+              <><span class="kinetic-line"><span class="kinetic-letter">{word}</span></span>{" "}</>
+            ))}
+            <span class="kinetic-phrase">
+              {"a safe place".split(" ").map((word, index) => (
+                <>{index > 0 && " "}<span class:list={["kinetic-line", { "kinetic-line-emphasis": index > 0 }]}><span class="kinetic-letter">{word}</span></span></>
+              ))}
+              <span class="kinetic-underline"></span>
+            </span>{" "}
+            {"to call home.".split(" ").map(word => (
+              <><span class="kinetic-line kinetic-line-emphasis"><span class="kinetic-letter">{word}</span></span>{" "}</>
+            ))}
+          </span>
         </h2>
         <p>
-          SPH is developing a housing model with three intended home types. Final
-          locations, availability, and occupancy guidelines are still being confirmed.
+          Stable Path Housing Foundation is developing housing programs designed to
+          support veterans experiencing housing instability, individuals and families
+          with limited income, single mothers and families working toward stability,
+          survivors of domestic violence who need safe housing, and individuals
+          transitioning from unstable or temporary living situations.
         </p>
       </div>
     </header>
@@ -76,6 +93,45 @@ const futureProgramDetails = [
     </div>
   </div>
 </section>
+
+<style>
+  .housing-program-heading { align-items: center; }
+  .kinetic-title { width: 100%; max-width: none; color: #a47a0e; font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.8rem, 4.35vw, 5.15rem); font-weight: 400; letter-spacing: -.045em; line-height: 1.08; text-wrap: balance; }
+  .kinetic-line { display: inline-block; overflow: hidden; vertical-align: bottom; padding: .08em .08em .14em; margin: -.08em -.08em -.14em; white-space: nowrap; }
+  .kinetic-letter { display: inline-block; transform-origin: 50% 100%; }
+  .kinetic-line-emphasis { font-style: italic; }
+  .kinetic-phrase { position: relative; display: inline-block; white-space: nowrap; }
+  .kinetic-underline { position: absolute; left: 0; right: 0; bottom: -.06em; height: 3px; border-radius: 50%; background: currentColor; transform-origin: left; }
+  .kinetic-title.is-ready:not(.is-revealed) .kinetic-letter { transform: translateY(115%) rotate(5deg); opacity: 0; }
+  .kinetic-title.is-ready:not(.is-revealed) .kinetic-underline { transform: scaleX(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .kinetic-title .kinetic-letter, .kinetic-title .kinetic-underline { transform: none !important; opacity: 1 !important; }
+  }
+</style>
+
+<script>
+  const kineticTitle = document.querySelector<HTMLElement>("[data-kinetic-title]");
+  if (kineticTitle && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    kineticTitle.classList.add("is-ready");
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      const letters = kineticTitle.querySelectorAll<HTMLElement>(".kinetic-letter");
+      letters.forEach((letter, index) => {
+        letter.animate([
+          { transform: "translateY(115%) rotate(5deg)", opacity: 0 },
+          { transform: "translateY(0) rotate(0)", opacity: 1 },
+        ], { duration: 950, delay: index * 65, easing: "cubic-bezier(.22,1,.36,1)", fill: "both" });
+      });
+      const underline = kineticTitle.querySelector<HTMLElement>(".kinetic-underline")!;
+      const finish = underline.animate([{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }], {
+        duration: 650, delay: 1050, easing: "cubic-bezier(.22,1,.36,1)", fill: "both",
+      });
+      finish.finished.then(() => kineticTitle.classList.add("is-revealed")).catch(() => {});
+    }, { threshold: 0.15 });
+    observer.observe(kineticTitle);
+  }
+</script>
 
 <script>
   const setupHousingProgramMotion = () => {
